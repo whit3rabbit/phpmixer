@@ -1,0 +1,60 @@
+# Statement Shuffling Example Configuration
+# This configuration file focuses on statement shuffling obfuscation
+
+# General behavior settings
+silent: false                    # Show informational messages
+abort_on_error: true             # Stop processing on the first error
+debug_mode: true                 # Enable debug logging for better visibility
+parser_mode: "PREFER_PHP7"       # PHP Parser version preference
+
+# Obfuscation options
+obfuscation:
+  # Statement shuffling (main focus of this example)
+  statement_shuffling:
+    enabled: true                # Shuffle independent statements within blocks
+    min_chunk_size: 2            # Minimum number of statements to consider for shuffling
+    chunk_mode: "fixed"          # "fixed" or "ratio"
+    chunk_ratio: 20              # Percentage of statements to include in a chunk
+  
+  # Disable other obfuscation techniques to highlight statement shuffling
+  strings:
+    enabled: false               # Disable string literal obfuscation
+  
+  comments:
+    strip: false                 # Keep comments to show what's happening
+  
+  variables:
+    scramble: false              # No variable name obfuscation
+  
+  functions:
+    scramble: false              # No function name obfuscation
+  
+  classes:
+    scramble: false              # No class name obfuscation
+  
+  control_flow:
+    enabled: false               # No control flow obfuscation
+  
+  array_access:
+    enabled: false               # No array access obfuscation
+    
+  dead_code:
+    enabled: false               # No dead code injection
+    
+  junk_code:
+    enabled: false               # No junk code insertion
+
+# Legacy flat-style settings (for backward compatibility)
+strip_comments: false
+obfuscate_string_literal: false
+obfuscate_control_flow: false
+obfuscate_array_access: false
+obfuscate_variable_name: false
+obfuscate_function_name: false
+obfuscate_class_name: false
+inject_dead_code: false
+inject_junk_code: false
+shuffle_stmts: true              # Enable statement shuffling
+shuffle_stmts_min_chunk_size: 2  # Minimum number of statements to consider for shuffling
+shuffle_stmts_chunk_mode: "fixed" # "fixed" or "ratio"
+shuffle_stmts_chunk_ratio: 20    # Percentage of statements to include in a chunk 

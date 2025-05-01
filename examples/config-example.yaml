@@ -1,0 +1,80 @@
+# PHP Obfuscator Example Configuration
+# This file demonstrates various configuration options with explanations.
+# Copy this file to your project root as 'config.yaml' to use it.
+
+# General behavior settings
+silent: false                    # When true, suppresses informational messages
+abort_on_error: true             # Stop processing on the first error
+debug_mode: false                # Enable verbose debug logging
+parser_mode: "PREFER_PHP7"       # PHP Parser version preference (PREFER_PHP7, PREFER_PHP8, etc.)
+
+# File handling settings
+follow_symlinks: false           # Whether to follow symbolic links during directory processing
+# List of paths to skip completely
+skip:
+  - vendor/
+  - node_modules/
+  - tests/
+  
+# List of paths to keep but not obfuscate (copied as-is)
+keep:
+  - assets/
+  - .env
+  - LICENSE
+
+# Obfuscation options (hierarchical format - recommended)
+obfuscation:
+  # String obfuscation settings
+  strings:
+    enabled: true                # Enable string literal obfuscation
+    technique: "base64"          # Options: "base64", "rot13", "xor"
+  
+  # Comment handling
+  comments:
+    strip: false                 # Remove comments from the PHP code
+  
+  # Name scrambling settings
+  variables:
+    scramble: true               # Obfuscate variable names
+  
+  functions:
+    scramble: true               # Obfuscate function names
+  
+  classes:
+    scramble: true               # Obfuscate class names
+  
+  # Control flow obfuscation
+  control_flow:
+    enabled: true                # Wrap blocks in if(true){} statements 
+    max_nesting_depth: 2         # Maximum depth for nested control flow obfuscation
+    random_conditions: true      # Use random conditions (true/1==1/5>2) for better obfuscation
+    add_dead_branches: false     # Add bogus else{} branches to if statements
+  
+  # Array access obfuscation (experimental)
+  array_access:
+    enabled: true                # Transform array access into function calls
+
+# Advanced scrambling options
+scramble_mode: "identifier"      # Options: "identifier" (a-zA-Z), "hexa" (0-9a-f), "numeric" (0-9)
+scramble_length: 5               # Target length for scrambled names
+
+# Symbols to ignore during obfuscation (don't scramble these)
+ignore_constants: []
+ignore_variables: ["_GET", "_POST", "_REQUEST", "_SESSION", "_COOKIE", "_SERVER"]
+ignore_functions: ["main"]
+ignore_classes: []
+
+# Alternative: Legacy flat-style settings 
+# Both formats are supported, but we recommend using the structured format above.
+# Only include these if not using the hierarchical format.
+#
+# strip_comments: false
+# obfuscate_string_literal: true
+# string_obfuscation_technique: "base64"
+# obfuscate_control_flow: true
+# control_flow_max_nesting_depth: 2
+# control_flow_random_conditions: true
+# obfuscate_array_access: true
+# obfuscate_variable_name: true
+# obfuscate_function_name: true
+# obfuscate_class_name: true 
