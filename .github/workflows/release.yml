@@ -1,11 +1,12 @@
+# .github/workflows/release.yml
 name: Release Binaries
 
 on:
   release:
-    types: [created]
+    types: [created] # Trigger when a release is published/created on GitHub
 
 permissions:
-  contents: write
+  contents: write # Needed to write release assets
 
 jobs:
   releases-matrix:
@@ -13,24 +14,49 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
         goos: [linux, windows, darwin]
         goarch: ["386", amd64, arm64]
-        include:
-          - goos: windows
-            asset_suffix: .exe
         exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
+          # Exclude unsupported Go combinations or ones you don't need
+          - goos: darwin
+            goarch: "386"
+          # arm64 for windows is less common target, exclude unless needed
+          - goos: windows
+            goarch: arm64
     steps:
-      - uses: actions/checkout@v4
-      - uses: wangyoucao577/go-release-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Go Releaser
+        uses: wangyoucao577/go-release-action@v1.53 # Using the specific version from your log
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          project_path: ./cmd/go-php-obfuscator  # Path to your Go source files
+
+          # --- CORE FIXES ---
+          # Point to the Go package path relative to the go.mod file
+          # Based on your structure: ./cmd/go-php-obfuscator/ is the likely package to build.
+          project_path: "./cmd/go-php-obfuscator"
+
+          # Set the desired name for the output binary file
           binary_name: "phpmixer"
-          asset_name: phpmixer-${{ github.ref_name }}-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.asset_suffix }}
+
+          # --- OTHER SETTINGS ---
+          # Specify Go version (optional but recommended for consistency)
+          # goversion: "latest" # Or e.g., "1.24"
+
+          # Files to include in the release archive along with the binary
+          # These should be relative to the repository root.
           extra_files: LICENSE README.md
+
+          # Optional flags for smaller binaries (remove if not desired)
+          # ldflags: "-s -w"
+
+          # Settings from your original log (using action defaults where possible)
+          md5sum: TRUE
+          sha256sum: FALSE # Default is TRUE, explicitly set to FALSE if not needed
+          # compress_assets: TRUE # Default is TRUE
+          # overwrite: FALSE # Default is FALSE
+          # retry: 3 # Default is 3
