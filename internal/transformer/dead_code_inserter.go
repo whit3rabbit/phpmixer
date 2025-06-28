@@ -383,9 +383,9 @@ func (v *DeadCodeInserterVisitor) generateDeadCodeBlock() ast.Vertex {
 	conditionType := v.random.Intn(4)
 	switch conditionType {
 	case 0:
-		// false
-		condition = &ast.ScalarString{
-			Value: []byte("false"),
+		// false literal
+		condition = &ast.ScalarLnumber{
+			Value: []byte("0"),
 		}
 	case 1:
 		// 0
@@ -401,9 +401,17 @@ func (v *DeadCodeInserterVisitor) generateDeadCodeBlock() ast.Vertex {
 		condition = &ast.ExprBinaryIdentical{
 			Left: &ast.ScalarString{
 				Value: []byte("'a'"),
+				StringTkn: &token.Token{
+					ID:    token.T_CONSTANT_ENCAPSED_STRING,
+					Value: []byte("'a'"),
+				},
 			},
 			Right: &ast.ScalarString{
 				Value: []byte("'b'"),
+				StringTkn: &token.Token{
+					ID:    token.T_CONSTANT_ENCAPSED_STRING,
+					Value: []byte("'b'"),
+				},
 			},
 		}
 	}
@@ -469,10 +477,12 @@ func (v *DeadCodeInserterVisitor) generateUnusedVariableAssignment() ast.Vertex 
 	case 1:
 		// Random string
 		randomString := fmt.Sprintf("junk%d", v.random.Intn(1000))
+		quotedString := fmt.Sprintf("'%s'", randomString)
 		expr = &ast.ScalarString{
-			Value: []byte(fmt.Sprintf("'%s'", randomString)),
+			Value: []byte(quotedString),
 			StringTkn: &token.Token{
-				Value: []byte(fmt.Sprintf("'%s'", randomString)),
+				ID:    token.T_CONSTANT_ENCAPSED_STRING,
+				Value: []byte(quotedString),
 			},
 		}
 	case 2:
@@ -483,12 +493,16 @@ func (v *DeadCodeInserterVisitor) generateUnusedVariableAssignment() ast.Vertex 
 					Val: &ast.ScalarLnumber{Value: []byte(fmt.Sprintf("%d", v.random.Intn(100)))},
 				},
 				&ast.ExprArrayItem{
-					Val: &ast.ScalarString{
-						Value: []byte(fmt.Sprintf("'item%d'", v.random.Intn(100))),
-						StringTkn: &token.Token{
-							Value: []byte(fmt.Sprintf("'item%d'", v.random.Intn(100))),
-						},
-					},
+					Val: func() ast.Vertex {
+						itemString := fmt.Sprintf("'item%d'", v.random.Intn(100))
+						return &ast.ScalarString{
+							Value: []byte(itemString),
+							StringTkn: &token.Token{
+								ID:    token.T_CONSTANT_ENCAPSED_STRING,
+								Value: []byte(itemString),
+							},
+						}
+					}(),
 				},
 			},
 		}

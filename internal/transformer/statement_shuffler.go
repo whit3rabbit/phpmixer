@@ -248,8 +248,16 @@ func (v *StatementShufflerVisitor) shuffleFunctionStatements(node *ast.StmtFunct
 	replacement := &ast.StmtFunction{
 		Name:       node.Name,
 		Params:     node.Params,
-		Stmts:      shuffledStmts,
 		ReturnType: node.ReturnType,
+		Stmts:      shuffledStmts,
+		// Copy token fields if they exist
+		FunctionTkn: node.FunctionTkn,
+		AmpersandTkn: node.AmpersandTkn,
+		OpenParenthesisTkn: node.OpenParenthesisTkn,
+		CloseParenthesisTkn: node.CloseParenthesisTkn,
+		ColonTkn: node.ColonTkn,
+		OpenCurlyBracketTkn: node.OpenCurlyBracketTkn,
+		CloseCurlyBracketTkn: node.CloseCurlyBracketTkn,
 	}
 
 	// Add the replacement
@@ -295,11 +303,17 @@ func (v *StatementShufflerVisitor) shuffleMethodStatements(node *ast.StmtClassMe
 
 	// Create a new StmtClassMethod with the shuffled statement list
 	replacement := &ast.StmtClassMethod{
-		Name:       node.Name,
-		Modifiers:  node.Modifiers,
-		Params:     node.Params,
-		ReturnType: node.ReturnType,
-		Stmt:       replacementStmtList,
+		Name:        node.Name,
+		Modifiers:   node.Modifiers,
+		Params:      node.Params,
+		ReturnType:  node.ReturnType,
+		Stmt:        replacementStmtList,
+		// Copy token fields if they exist
+		FunctionTkn: node.FunctionTkn,
+		AmpersandTkn: node.AmpersandTkn,
+		OpenParenthesisTkn: node.OpenParenthesisTkn,
+		CloseParenthesisTkn: node.CloseParenthesisTkn,
+		ColonTkn: node.ColonTkn,
 	}
 
 	// Add the replacement

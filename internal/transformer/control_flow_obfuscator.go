@@ -672,9 +672,9 @@ func (v *ControlFlowObfuscatorVisitor) createAlwaysTrueCondition() ast.Vertex {
 		}
 
 	case 1:
-		// Boolean "true" literal
-		return &ast.ScalarString{
-			Value: []byte("true"),
+		// Boolean true as numeric literal
+		return &ast.ScalarLnumber{
+			Value: []byte("1"),
 		}
 
 	case 2:
@@ -711,13 +711,13 @@ func (v *ControlFlowObfuscatorVisitor) createAlwaysTrueCondition() ast.Vertex {
 		}
 
 	default: // case 5
-		// Logical OR with true: true || $anything
+		// Logical OR with true: 1 || 0
 		return &ast.ExprBinaryLogicalOr{
-			Left: &ast.ScalarString{
-				Value: []byte("true"),
+			Left: &ast.ScalarLnumber{
+				Value: []byte("1"),
 			},
 			Right: &ast.ScalarLnumber{
-				Value: []byte("1"),
+				Value: []byte("0"),
 			},
 		}
 	}
@@ -1241,9 +1241,9 @@ func (v *ControlFlowObfuscatorVisitor) createAlwaysFalseCondition() ast.Vertex {
 
 	switch conditionType {
 	case 0:
-		// Simple false: false
-		condition = &ast.ScalarString{
-			Value: []byte("false"),
+		// Simple false: 0
+		condition = &ast.ScalarLnumber{
+			Value: []byte("0"),
 		}
 
 	case 1:

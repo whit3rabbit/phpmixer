@@ -126,24 +126,20 @@ func (v *CommentStripperVisitor) clearComments(t *token.Token) {
 				fmt.Printf("Removing comment: %s\n", ffToken.Value)
 			}
 
-			// In aggressive mode, nullify the comment token's contents
+			// In aggressive mode, completely skip comment tokens
 			if v.AggressiveMode {
-				// Replace the comment content with empty to ensure it doesn't get printed
-				ffToken.Value = []byte{}
-			} else {
-				// In standard mode, we'll just filter it out of the FreeFloating slice
-				// (This is what the original method did)
+				// Don't add this token to the new slice at all
 				continue
+			} else {
+				// In standard mode, nullify the comment content but keep the token structure
+				ffToken.Value = []byte{}
+				// Still add the token to preserve structure
+				newFreeFloating = append(newFreeFloating, ffToken)
 			}
+		} else {
+			// Add non-comment tokens to the new slice
+			newFreeFloating = append(newFreeFloating, ffToken)
 		}
-
-		// In aggressive mode with empty comments, skip adding them
-		if v.AggressiveMode && ffToken.ID == token.T_COMMENT && len(ffToken.Value) == 0 {
-			continue
-		}
-
-		// Add non-comment tokens to the new slice
-		newFreeFloating = append(newFreeFloating, ffToken)
 	}
 
 	if removedCount > 0 {
