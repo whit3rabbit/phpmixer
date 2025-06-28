@@ -627,11 +627,11 @@ func (v *StatementShufflerVisitor) shuffleChunks(stmts []ast.Vertex, chunks [][]
 }
 
 // GetReplacement implements the NodeReplacer interface
-func (v *StatementShufflerVisitor) GetReplacement(node ast.Vertex) ast.Vertex {
+func (v *StatementShufflerVisitor) GetReplacement(node ast.Vertex) (ast.Vertex, bool) {
 	for _, repl := range v.replacements {
 		if repl.Original == node {
-			return repl.Replacement
+			return repl.Replacement, true
 		}
 	}
-	return nil
+	return nil, false
 }
